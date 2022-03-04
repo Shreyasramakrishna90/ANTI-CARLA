@@ -35,22 +35,6 @@ cd Testing-Framework
 ./make_volume_folder.sh  
 ```
 
-# Running the Carla setup 
-
-***Launch Simulation***
-
-Next get into the path of this repo and execute the following script inside the carla-challange folder. This script has a few variables that need to be set before execution. 
-
-1. PROJECT_PATH: Set this to the location of this repo.
-1. CARLA_ROOT: Set this to the location of the CARLA_0.9.10 simulator folder. 
-2. PORT: The simulator port (default:2000)
-3. HAS_DISPLAY: 1 = display simulation run, 2 = headless mode (no display)
-
-Run the following command to launch the simulation
-```
-CUDA_VISIBLE_DEVICES=0 ./run_evaluation.sh
-```
-
 # Pluggable Code Skeleton
 The framework allows the user test their controllers through a pluggable code skeleton. There are some rules and constraints that needs to be followes in defining the user code. Violating these rules will throw errors.
 
@@ -60,7 +44,28 @@ To evaluate the framwork, put the tested agent under
 ```
 For example look at the **transfuser_agent.py** and **image_agent.py** scripts in the [team_code](https://github.com/Shreyasramakrishna90/Testing-Framework/tree/main/leaderboard/team_code) folder. These files are taken from the respective controller github repos. 
 
-Further, there could be several utility files required for running the controller. Create a folder in the main repo path and add all the files. For example, we have created the [transfuser](https://github.com/Shreyasramakrishna90/Testing-Framework/tree/main/transfuser) and [carla_project](https://github.com/Shreyasramakrishna90/Testing-Framework/tree/main/carla_project) folders for the transfuser and learning by cheating controllers.  
+Further, there could be several utility files required for running the controller. Create a folder in the main repo path and add all the files. For example, we have created the [transfuser](https://github.com/Shreyasramakrishna90/Testing-Framework/tree/main/transfuser) and [carla_project](https://github.com/Shreyasramakrishna90/Testing-Framework/tree/main/carla_project) folders for the transfuser and learning by cheating controllers.
+
+# Running the Carla setup 
+
+***Launch Simulation***
+
+In terminal 1, launch the simulator
+
+```
+ ./CarlaUE4.sh -quality-level=Epic -world-port=2000 -resx=400 -resy=300 -opengl &
+```
+
+In terminal 2, launch the framework
+
+```
+./run_evaluation.sh
+```
+You will need to make the following changes in the ./run_evaluation file. This script has a few variables that need to be set before execution. 
+
+1. PROJECT_PATH: Set this to the location of this repo. 
+2. PORT: The simulator port (default:2000)
+3. HAS_DISPLAY: 1 = display simulation run, 2 = headless mode (no display)
 
 
 ## References
