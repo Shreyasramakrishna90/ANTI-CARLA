@@ -7,20 +7,28 @@
                 "collisions_pedestrian": 0.0,
                 "collisions_vehicle": 0.0,
                 "outside_route_lanes": 0.0,
-                "red_light": 0.07012875393262233,
+                "red_light": 0.0,
                 "route_dev": 0.0,
                 "route_timeout": 0.0,
                 "stop_infraction": 0.0,
                 "vehicle_blocked": 0.0
             },
-            "meta": {},
+            "meta": {
+                "exceptions": [
+                    [
+                        "RouteScenario_1",
+                        0,
+                        "Failed"
+                    ]
+                ]
+            },
             "route_id": -1,
             "scores": {
-                "score_composed": 70.0,
-                "score_penalty": 0.7,
-                "score_route": 100.0
+                "score_composed": 29.927120949778473,
+                "score_penalty": 1.0,
+                "score_route": 29.927120949778473
             },
-            "status": "Completed"
+            "status": "Failed"
         },
         "progress": [
             1,
@@ -34,26 +42,24 @@
                     "collisions_pedestrian": [],
                     "collisions_vehicle": [],
                     "outside_route_lanes": [],
-                    "red_light": [
-                        "Agent ran a red light 11435 at (x=40.85, y=216.35, z=0.0)"
-                    ],
+                    "red_light": [],
                     "route_dev": [],
                     "route_timeout": [],
                     "stop_infraction": [],
                     "vehicle_blocked": []
                 },
                 "meta": {
-                    "duration_game": 24.75000036880374,
-                    "duration_system": 53.837923765182495,
-                    "route_length": 142.59486215322906
+                    "duration_game": 9.600000143051147,
+                    "duration_system": 20.82421064376831,
+                    "route_length": 136.36239571183387
                 },
-                "route_id": "RouteScenario_5",
+                "route_id": "RouteScenario_1",
                 "scores": {
-                    "score_composed": 70.0,
-                    "score_penalty": 0.7,
-                    "score_route": 100.0
+                    "score_composed": 29.927120949778473,
+                    "score_penalty": 1.0,
+                    "score_route": 29.927120949778473
                 },
-                "status": "Completed"
+                "status": "Failed"
             }
         ]
     },
@@ -74,13 +80,13 @@
         "carla_speedometer"
     ],
     "values": [
-        "70.000",
-        "100.000",
-        "0.700",
+        "29.927",
+        "29.927",
+        "1.000",
         "0.000",
         "0.000",
         "0.000",
-        "0.070",
+        "0.000",
         "0.000",
         "0.000",
         "0.000",

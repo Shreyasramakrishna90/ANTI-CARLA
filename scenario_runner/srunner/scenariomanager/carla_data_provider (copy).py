@@ -637,83 +637,32 @@ class CarlaDataProvider(object):  # pylint: disable=too-many-public-methods
 
         CarlaDataProvider.generate_spawn_points()
 
-        # if not hero:
-        hero_actor = CarlaDataProvider.get_hero_actor()
-        # else:
-            # hero_actor = None
         batch = []
-        count = 0
-        appeared = []
-        waypoint = CarlaDataProvider._world.get_map().get_waypoint(hero_actor.get_transform().location)
-
-        #batch = []
 
         for i in range(amount):
             # Get vehicle by model
             blueprint = CarlaDataProvider.create_blueprint(model, rolename)
 
-            # if random_location:
-            #     if CarlaDataProvider._spawn_index >= len(CarlaDataProvider._spawn_points):
-            #         print("No more spawn points to use. Spawned {} actors out of {}".format(i + 1, amount))
-            #         break
-            #     else:
-            #         spawn_point = CarlaDataProvider._spawn_points[CarlaDataProvider._spawn_index]
-            #         CarlaDataProvider._spawn_index += 1
-            # else:
-            #     try:
-            #         spawn_point = spawn_points[i]
-            #     except IndexError:
-            #         print("The amount of spawn points is lower than the amount of vehicles spawned")
-            #         break
-            #
-            # if spawn_point:
-            #     batch.append(SpawnActor(blueprint, spawn_point).then(
-            #         SetAutopilot(FutureActor, autopilot,
-            #                      CarlaDataProvider._traffic_manager_port)))
-
             if random_location:
                 if CarlaDataProvider._spawn_index >= len(CarlaDataProvider._spawn_points):
-                    CarlaDataProvider._spawn_index = len(CarlaDataProvider._spawn_points)
-                    spawn_point = None
-                #elif hero_actor is not None:
-                if count < 1:
-                    for w in waypoint.next(10):
-                        if w.transform.location not in appeared:
-                            appeared.append(w.transform.location)
-                            spawn_point = w.transform
-
-                            count += 1
-                            break
-                else:
-                    for i in CarlaDataProvider._spawn_points:
-                        if i.location.distance(hero_actor.get_transform().location) <= 50 and (i not in appeared):
-                            spawn_point = i
-                            appeared.append(i)
-                            break
-                CarlaDataProvider._spawn_index += 1
-                # if the spawn point is to close to hero we just ignore this position
-                if hero_actor.get_transform().location.distance(spawn_point.location) < 1.0:
-                    spawn_point = None
-
+                    print("No more spawn points to use. Spawned {} actors out of {}".format(i + 1, amount))
+                    break
                 else:
                     spawn_point = CarlaDataProvider._spawn_points[CarlaDataProvider._spawn_index]
                     CarlaDataProvider._spawn_index += 1
             else:
                 try:
-                    #spawn_point = CarlaActorPool._spawn_points[84]
                     spawn_point = spawn_points[i]
                 except IndexError:
                     print("The amount of spawn points is lower than the amount of vehicles spawned")
                     break
-            #print(spawn_point.location)
+
             if spawn_point:
                 batch.append(SpawnActor(blueprint, spawn_point).then(
-                         SetAutopilot(FutureActor, autopilot,
-                                      CarlaDataProvider._traffic_manager_port)))
-        #actor_list = CarlaActorPool.handle_actor_batch(batch)
+                    SetAutopilot(FutureActor, autopilot,
+                                 CarlaDataProvider._traffic_manager_port)))
 
         actors = CarlaDataProvider.handle_actor_batch(batch)
-        print(len(actors))
 
         if actors is None:
             return None

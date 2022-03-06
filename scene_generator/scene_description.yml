@@ -22,7 +22,7 @@ Scenario Description:
       #3: true
       #4: true
       #5: false
-    traffic_density: [0,10] #false -> no traffic, true -> traffic range [0,10]
+    traffic_density: [0,50] #false -> no traffic, true -> traffic range [0,10]
       #1: true
       #2: false
       #3: true
@@ -44,7 +44,7 @@ Initial Conditions: # A scenario can be strated from a specific initial conditio
       fog_distance: 0
       fog_density: 0
     region: 1 #scenario will start from region1
-    traffic_density: 2
+    traffic_density: 5
     pedestrian_density: 0
 Infraction Metrics: #Infraction metrics that can be recorded for each scene
     Driving score: true #true -> record,  false -> do not record
