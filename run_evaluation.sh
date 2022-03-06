@@ -36,13 +36,15 @@ export PYTHONPATH=$PYTHONPATH:scenario_runner
 export PYTHONPATH=$PYTHONPATH:${utils_route}
 export LEADERBOARD_ROOT=${PROJECT_PATH}/leaderboard
 export CHALLENGE_TRACK_CODENAME=SENSORS
-export PORT=3000 # same as the carla server port
+export PORT=2000 # same as the carla server port
 export TM_PORT=8000 # port for traffic manager, required when spawning multiple servers/clients
 export DEBUG_CHALLENGE=0
 export REPETITIONS=1 # multiple evaluation runs
 export ROUTES=leaderboard/data/validation_routes/routes_town05_DIY.xml
 export CHECKPOINT_ENDPOINT=results/sample_result.json # results file
 export SCENARIOS=leaderboard/data/scenarios/no_scenarios.json
+export TEAM_AGENT=${PROJECT_PATH}/leaderboard/team_code/image_agent.py
+export TEAM_CONFIG=${PROJECT_PATH}/trained_models/Learning_by_cheating/model.ckpt
 #export RESUME=True
 #============================================================================
 

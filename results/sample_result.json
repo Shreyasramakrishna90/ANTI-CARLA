@@ -5,30 +5,22 @@
             "infractions": {
                 "collisions_layout": 0.0,
                 "collisions_pedestrian": 0.0,
-                "collisions_vehicle": 3.8319599834534377,
-                "outside_route_lanes": 0.4789949979316797,
-                "red_light": 0.0,
+                "collisions_vehicle": 0.0,
+                "outside_route_lanes": 0.0,
+                "red_light": 0.07012875393262233,
                 "route_dev": 0.0,
                 "route_timeout": 0.0,
                 "stop_infraction": 0.0,
                 "vehicle_blocked": 0.0
             },
-            "meta": {
-                "exceptions": [
-                    [
-                        "RouteScenario_1",
-                        0,
-                        "Failed"
-                    ]
-                ]
-            },
+            "meta": {},
             "route_id": -1,
             "scores": {
-                "score_composed": 0.15212899739702881,
-                "score_penalty": 0.00993659533948149,
-                "score_route": 15.309972098045325
+                "score_composed": 70.0,
+                "score_penalty": 0.7,
+                "score_route": 100.0
             },
-            "status": "Failed"
+            "status": "Completed"
         },
         "progress": [
             1,
@@ -40,77 +32,57 @@
                 "infractions": {
                     "collisions_layout": [],
                     "collisions_pedestrian": [],
-                    "collisions_vehicle": [
-                        "Agent collided against object with type=vehicle.mini.cooperst and id=647 at (x=137.578, y=199.098, z=2.172)",
-                        "Agent collided against object with type=vehicle.bmw.grandtourer and id=721 at (x=142.273, y=199.275, z=2.277)",
-                        "Agent collided against object with type=vehicle.nissan.patrol and id=669 at (x=168.629, y=198.095, z=2.827)",
-                        "Agent collided against object with type=vehicle.diamondback.century and id=673 at (x=184.866, y=187.743, z=2.778)",
-                        "Agent collided against object with type=vehicle.mustang.mustang and id=692 at (x=187.633, y=186.513, z=2.717)",
-                        "Agent collided against object with type=vehicle.mustang.mustang and id=692 at (x=190.364, y=185.244, z=2.649)",
-                        "Agent collided against object with type=vehicle.mustang.mustang and id=692 at (x=192.994, y=183.749, z=2.582)",
-                        "Agent collided against object with type=vehicle.mustang.mustang and id=692 at (x=195.73, y=182.445, z=2.514)"
+                    "collisions_vehicle": [],
+                    "outside_route_lanes": [],
+                    "red_light": [
+                        "Agent ran a red light 11435 at (x=40.85, y=216.35, z=0.0)"
                     ],
-                    "outside_route_lanes": [
-                        "Agent went outside its route lanes for about 60.421 meters (40.84% of the completed route)"
-                    ],
-                    "red_light": [],
                     "route_dev": [],
                     "route_timeout": [],
                     "stop_infraction": [],
                     "vehicle_blocked": []
                 },
                 "meta": {
-                    "duration_game": 518.0500077195466,
-                    "duration_system": 1476.1464312076569,
-                    "route_length": 136.36239571183387
+                    "duration_game": 24.75000036880374,
+                    "duration_system": 53.837923765182495,
+                    "route_length": 142.59486215322906
                 },
-                "route_id": "RouteScenario_1",
+                "route_id": "RouteScenario_5",
                 "scores": {
-                    "score_composed": 0.15212899739702881,
-                    "score_penalty": 0.00993659533948149,
-                    "score_route": 15.309972098045325
+                    "score_composed": 70.0,
+                    "score_penalty": 0.7,
+                    "score_route": 100.0
                 },
-                "status": "Failed"
+                "status": "Completed"
             }
         ]
     },
     "eligible": true,
     "entry_status": "Finished",
     "labels": [
-        "Avg. driving score",
-        "Avg. route completion",
-        "Avg. infraction penalty",
-        "Collisions with pedestrians",
-        "Collisions with vehicles",
-        "Collisions with layout",
-        "Red lights infractions",
-        "Stop sign infractions",
-        "Off-road infractions",
-        "Route deviations",
-        "Route timeouts",
-        "Agent blocked"
+        "avg. route score",
+        "collision",
+        "route_deviation"
     ],
     "sensors": [
         "carla_camera",
         "carla_camera",
         "carla_camera",
         "carla_camera",
-        "carla_radar",
-        "carla_lidar",
         "carla_imu",
         "carla_gnss",
         "carla_speedometer"
     ],
     "values": [
-        "0.152",
-        "15.310",
-        "0.010",
-        "0.000",
-        "3.832",
+        "70.000",
+        "100.000",
+        "0.700",
         "0.000",
         "0.000",
         "0.000",
-        "0.479",
+        "0.070",
+        "0.000",
+        "0.000",
         "0.000",
         "0.000",
         "0.000"

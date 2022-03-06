@@ -178,13 +178,14 @@ class RouteScenario(BasicScenario):
 
     category = "RouteScenario"
 
-    def __init__(self, world, config, debug_mode=0, criteria_enable=True):
+    def __init__(self, traffic_amount, world, config, debug_mode=0, criteria_enable=True):
         """
         Setup all relevant parameters and create scenarios along route
         """
         self.config = config
         self.route = None
         self.sampled_scenarios_definitions = None
+        self.traffic_amount = traffic_amount
 
         self._update_route(world, config, debug_mode>0)
 
@@ -454,9 +455,9 @@ class RouteScenario(BasicScenario):
         town_amount = {
             'Town01': 120,
             'Town02': 100,
-            'Town03': 120,
+            'Town03': self.traffic_amount,
             'Town04': 200,
-            'Town05': 120,
+            'Town05': self.traffic_amount,
             'Town06': 150,
             'Town07': 110,
             'Town08': 180,
@@ -540,7 +541,7 @@ class RouteScenario(BasicScenario):
                                       route=route,
                                       offroad_max=30,
                                       terminate_on_failure=True)
-                                      
+
         completion_criterion = RouteCompletionTest(self.ego_vehicles[0], route=route)
 
         outsidelane_criterion = OutsideRouteLanesTest(self.ego_vehicles[0], route=route)

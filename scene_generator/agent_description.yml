@@ -6,12 +6,12 @@ Controller: #Select the controller for testing true -> for selection, false -> n
   Learning_by_cheating: true
   Own_controller: false #for testing your own controller, place the code in the skeleton (refer github readme), weights in the trained_models folder
 Sensors: # sensors selection false -> no selection, true -> places sensor in default location (defined in the sensors.py file), or provide the sensor parameters as a list
-      rgb_camera_center: [x:1.3, y:0.0, z:1.3, roll:0.0, pitch:0.0, yaw:0.0, width:256, height:256, fov:90, id:rgb]
-      rgb_camera_left: [x:1.3, y:-0.25, z:1.3, roll:0.0, pitch:0.0, yaw:-45.0, width:256, height:256, fov:90, id:rgb_left]
-      rgb_camera_right: [x:1.3, y:0.25, z:1.3, roll:0.0, pitch:0.0, yaw:45.0, width:256, height:256, fov:90, id:rgb_right]
-      rgb_camera_rear: [x:-1.3, y:0.0, z:2.3, roll:0.0, pitch:0.0, yaw:-180.0, width:256, height:256, fov:100, id:rgb_rear]
-      radar: [x:2.8, y:0.0, z:1.0, roll:0.0, pitch:0.0, yaw:0.0, fov:25, sensor_tick:0.05, id:radar]
-      lidar: [x:1.3, y:0.0, z:2.5, roll:0.0, pitch:0.0, yaw:-90.0, id:lidar]
+      rgb_camera_center: [x:1.3, y:0.0, z:1.3, roll:0.0, pitch:0.0, yaw:0.0, width:256, height:144, fov:90, id:rgb]
+      rgb_camera_left: [x:1.2, y:-0.25, z:1.3, roll:0.0, pitch:0.0, yaw:-45.0, width:256, height:144, fov:90, id:rgb_left]
+      rgb_camera_right: [x:1.2, y:0.25, z:1.3, roll:0.0, pitch:0.0, yaw:45.0, width:256, height:144, fov:90, id:rgb_right]
+      rgb_camera_rear: [x:-1.3, y:0.0, z:2.3, roll:0.0, pitch:0.0, yaw:-180.0, width:256, height:144, fov:100, id:rgb_rear]
+      radar: false #[x:2.8, y:0.0, z:1.0, roll:0.0, pitch:0.0, yaw:0.0, fov:25, sensor_tick:0.05, id:radar]
+      lidar: false #[x:1.3, y:0.0, z:2.5, roll:0.0, pitch:0.0, yaw:-90.0, id:lidar]
       imu: [x:0.0, y:0.0, z:0.0, roll:0.0, pitch:0.0, yaw:0.0,sensor_tick:0.05, id:imu]
       gnss: [x:0.0, y:0.0, z:0.0, roll:0.0, pitch:0.0, yaw:0.0,sensor_tick:0.01, id:gps]
       segmentation_camera: false

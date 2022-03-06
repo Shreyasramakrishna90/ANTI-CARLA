@@ -14,6 +14,8 @@ from __future__ import print_function
 from dictor import dictor
 import math
 import sys
+import os
+import csv
 
 from srunner.scenariomanager.traffic_events import TrafficEventType
 
@@ -178,7 +180,7 @@ class StatisticsManager(object):
 
                         elif event.get_type() == TrafficEventType.ROUTE_COMPLETED:
                             score_route = 100.0
-                            target_reached = True
+                            target_reached = True #Truedata_path + "/" + folder + "/" +"run%s"%y+ "/"
                         elif event.get_type() == TrafficEventType.ROUTE_COMPLETION:
                             if not target_reached:
                                 if event.get_dict():
@@ -253,7 +255,8 @@ class StatisticsManager(object):
         save_dict(endpoint, data)
 
     @staticmethod
-    def save_global_record(route_record, sensors, total_routes, endpoint):
+    def save_global_record(route_record,infractions_to_record, sensors, total_routes, endpoint,filename,stats_file):
+        stats = []
         data = fetch_dict(endpoint)
         if not data:
             data = create_default_json_msg()
@@ -275,19 +278,50 @@ class StatisticsManager(object):
                           '{:.3f}'.format(stats_dict['infractions']['vehicle_blocked'])
                           ]
 
-        data['labels'] = ['Avg. driving score',
-                          'Avg. route completion',
-                          'Avg. infraction penalty',
-                          'Collisions with pedestrians',
-                          'Collisions with vehicles',
-                          'Collisions with layout',
-                          'Red lights infractions',
-                          'Stop sign infractions',
-                          'Off-road infractions',
-                          'Route deviations',
-                          'Route timeouts',
-                          'Agent blocked'
+        # data['labels'] = ['Avg. driving score',
+        #                   'Avg. route completion',
+        #                   'Avg. infraction penalty',
+        #                   'Collisions with pedestrians',
+        #                   'Collisions with vehicles',
+        #                   'Collisions with layout',
+        #                   'Red lights infractions',
+        #                   'Stop sign infractions',
+        #                   'Off-road infractions',
+        #                   'Route deviations',
+        #                   'Route timeouts',
+        #                   'Agent blocked'
+        #                   ]
+
+        data['labels'] = ['avg. route score',
+                          'collision',
+                          'route_deviation'
                           ]
+
+        collision_lane = stats_dict['infractions']['collisions_vehicle'] + stats_dict['infractions']['collisions_pedestrian']
+        infractions = 0.7* float(stats_dict['infractions']['red_light'])  + 0.8 * float(stats_dict['infractions']['stop_infraction'])
+        out_of_lane = stats_dict['infractions']['outside_route_lanes']
+        driving_score = round(stats_dict['scores']['score_composed'],2)
+
+        myvalues = [{'avg. route score': '{:.3f}'.format(stats_dict['scores']['score_composed']),
+                    'collision':collision_lane, 'route_deviation':'{:.3f}'.format(stats_dict['infractions']['outside_route_lanes'])}]
+
+        file_exists = os.path.isfile(filename)
+        # writing to csv file
+        with open(filename, 'w') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames = data['labels'])
+            if not file_exists:
+                writer.writeheader()
+            writer.writerows(myvalues)
+
+        stats.append(driving_score)
+        stats.append(collision_lane)
+        stats.append(infractions)
+        stats.append(out_of_lane)
+
+        with open(stats_file, 'a') as csvfile1:
+            writer = csv.writer(csvfile1, delimiter = ',')
+            writer.writerow(stats)
+
 
         entry_status = "Finished"
         eligible = True
@@ -312,6 +346,8 @@ class StatisticsManager(object):
         data['eligible'] = eligible
 
         save_dict(endpoint, data)
+
+        return collision_lane, infractions, out_of_lane, driving_score
 
     @staticmethod
     def save_sensors(sensors, endpoint):

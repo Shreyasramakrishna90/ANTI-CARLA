@@ -1,8 +1,8 @@
-cloudiness,50
-precipitation,80
-precipitation_deposits,25
-sun_altitude_angle,-35
-traffic_density,0
+cloudiness,5
+precipitation,75
+precipitation_deposits,10
+sun_altitude_angle,30
+traffic_density,5
 town,5
 wind_intensity,0
 sun_azimuth_angle,0

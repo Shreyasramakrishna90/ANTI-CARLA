@@ -10,7 +10,7 @@ Scenario Description:
       cloudiness: [0,100] # min:0, max:100
       precipitation: [0,100] # min:0, max:100
       precipitation_deposits: [0,100] # min:0, max:100
-      sun_altitude_angle: [-90,90] # min:-90, max:90
+      sun_altitude_angle: [0,90] # min:-90, max:90
       wind_intensity: false # min:0, max:100
       sun_azimuth_angle: false # min:0, max:100
       wetness: false # min:0, max:100
@@ -37,7 +37,7 @@ Initial Conditions: # A scenario can be strated from a specific initial conditio
       cloudiness: 0
       precipitation: 0
       precipitation_deposits: 0
-      sun_altitude_angle: 45
+      sun_altitude_angle: 0
       wind_intensity: 0
       sun_azimuth_angle: 0
       wetness: 0

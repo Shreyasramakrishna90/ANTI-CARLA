@@ -28,6 +28,8 @@ import sys
 import carla
 import copy
 import signal
+import csv
+import pandas as pd
 from ruamel import yaml
 from srunner.scenariomanager.carla_data_provider import *
 from srunner.scenariomanager.timer import GameTime
@@ -200,7 +202,7 @@ class LeaderboardEvaluator(object):
             for i, _ in enumerate(self.ego_vehicles):
                 self.ego_vehicles[i].set_transform(ego_vehicles[i].transform)
 
-        # sync state
+        # sync statedata_path + "/" + folder + "/" +"run%s"%y+ "/"
         CarlaDataProvider.get_world().tick()
         #print("num of ego:", len(self.ego_vehicles))
 
@@ -251,7 +253,7 @@ class LeaderboardEvaluator(object):
         self.statistics_manager.save_record(current_stats_record, config.index, checkpoint)
         self.statistics_manager.save_entry_status(entry_status, False, checkpoint)
 
-    def _load_and_run_scenario(self, args, config, sensors_info, data_to_record, record_frequency, display, record_folder):
+    def _load_and_run_scenario(self, args, config, sensors_info, data_to_record, record_frequency, display, record_folder,data_folder,route_folder,traffic_amount):
         """
         Load and run the scenario given by config.
 
@@ -271,6 +273,7 @@ class LeaderboardEvaluator(object):
         try:
             self._agent_watchdog.start()
             agent_class_name = getattr(self.module_agent, 'get_entry_point')()
+            print(agent_class_name)
             self.agent_instance = getattr(self.module_agent, agent_class_name)(args.agent_config, sensors_info, data_to_record, record_frequency, display, record_folder)
             config.agent = self.agent_instance
 
@@ -317,7 +320,7 @@ class LeaderboardEvaluator(object):
         try:
             self._load_and_wait_for_world(args, config.town, config.ego_vehicles)
             self._prepare_ego_vehicles(config.ego_vehicles, False)
-            scenario = RouteScenario(world=self.world, config=config, debug_mode=args.debug)
+            scenario = RouteScenario(traffic_amount,world=self.world, config=config, debug_mode=args.debug)
             self.statistics_manager.set_scenario(scenario.scenario)
 
             # self.agent_instance._init()
@@ -396,15 +399,47 @@ class LeaderboardEvaluator(object):
         if crash_message == "Simulation crashed":
             sys.exit(-1)
 
-    def run(self, args, sensors_info, data_to_record, record_frequency, display, record_folder):
+    def read_simulation_param(self,route_folder,x):
+        """
+        Get the traffic and fault type information information from the route folder
+        """
+        hyperparameters = []
+        parameters = pd.read_csv(route_folder + "/scene_parameters.csv", usecols = [0,1], header=None, index_col=False)
+        for index, row in parameters.iterrows():
+            if row[0] == x:
+                hyperparameters.append(int(row[1]))
+
+        return hyperparameters[0]
+
+    def compute_scenario_score(self,collision, infractions, out_of_lane,driving_score,test_score_file):
+        stats = []
+        #scenario_score = 0.5 * collision + 0.25 * float(infractions) + 0.25 * float(out_of_lane)
+        #scenario_score = risk + float(infractions) + float(out_of_lane)
+        #stats.append(round(scenario_score,2))
+        stats.append(driving_score)
+        with open(test_score_file, 'a') as csvfile: #Always save the selected hyperparameters for optimization algorithms
+            writer = csv.writer(csvfile, delimiter = ',')
+            writer.writerow(stats)
+
+        print("---------------------")
+        #print("Avg Scene Risk:%0.2f"%risk)
+        print("Scene Score:%0.2f"%driving_score)
+        print("---------------------")
+
+    def run(self, args, sensors_info, data_to_record, record_frequency, display, record_folder,data_folder,route_folder,data_root,run_root,infractions_to_record):
         """
         Run the challenge mode
         """
         # agent_class_name = getattr(self.module_agent, 'get_entry_point')()
         # self.agent_instance = getattr(self.module_agent, agent_class_name)(args.agent_config)
 
+        traffic_amount = self.read_simulation_param(route_folder,x='traffic_density')
+
+        filename = data_folder + "simulation_data.csv"
+        stats_file = run_root + "infraction_stats_over_run.csv"
+        test_score_file = run_root + "test_score.csv"
+
         route_indexer = RouteIndexer(args.routes, args.scenarios, args.repetitions)
-        print(route_indexer)
         if args.resume:
             route_indexer.resume(args.checkpoint)
             self.statistics_manager.resume(args.checkpoint)
@@ -417,7 +452,7 @@ class LeaderboardEvaluator(object):
             config = route_indexer.next()
 
             # run
-            self._load_and_run_scenario(args, config, sensors_info, data_to_record, record_frequency, display, record_folder)
+            self._load_and_run_scenario(args, config, sensors_info, data_to_record, record_frequency, display, record_folder,data_folder,route_folder,traffic_amount)
 
             for obj in gc.get_objects():
                 try:
@@ -431,7 +466,8 @@ class LeaderboardEvaluator(object):
         # save global statistics
         print("\033[1m> Registering the global statistics\033[0m")
         global_stats_record = self.statistics_manager.compute_global_statistics(route_indexer.total)
-        StatisticsManager.save_global_record(global_stats_record, self.sensor_icons, route_indexer.total, args.checkpoint)
+        collision, infractions, out_of_lane, driving_score = StatisticsManager.save_global_record(global_stats_record,infractions_to_record,self.sensor_icons, route_indexer.total, args.checkpoint,filename,stats_file)
+        self.compute_scenario_score(collision, infractions, out_of_lane,driving_score,test_score_file)
 
 def decode_agent_description(agent_config):
     """
@@ -497,8 +533,10 @@ def create_root_folder(data_path,y,args):
         if not os.path.exists(new_path):
             os.makedirs(new_path, exist_ok=True) #creates a new dir everytime with max number
         paths.append(new_path)
+    run_root = data_path + "/" + args.data_folder + "/" +"run%s"%y+ "/"
+    #paths.append(run_root)
 
-    return paths
+    return paths,run_root
 
 def read_folder_number(path,routes_folder):
     """
@@ -606,7 +644,7 @@ def main():
     try:
         data_path = arguments.project_path
         y = read_folder_number(data_path,arguments.routes_folder)
-        paths = create_root_folder(data_path,y,arguments)
+        paths,run_root = create_root_folder(data_path,y,arguments)
         data_folder = paths[0] + "scene%d"%arguments.scene_number + '/'
         os.makedirs(data_folder, exist_ok=True)
         route_folder = paths[1] + "scene%d"%arguments.scene_number + '/'
@@ -633,14 +671,14 @@ def main():
             arguments.agent = "transfuser_agent.py"
             arguments.agent_config = arguments.project_path + "/trained_models/transfuser"
         elif str(controller[0]).strip() == 'Learning_by_cheating':
-            arguments.agent = "image_agent.py"
+            arguments.agent = arguments.project_path +  "/leaderboard/team_code/image_agent.py"
             arguments.agent_config = arguments.project_path + "/trained_models/Learning_by_cheating/model.ckpt"
         else:
             arguments.agent = 'own_agent.py' #"transfuser_agent.py"
             arguments.agent_config = arguments.project_path + "/trained_models/transfuser"
 
         leaderboard_evaluator = LeaderboardEvaluator(arguments, statistics_manager)
-        leaderboard_evaluator.run(arguments, sensors_info, data_to_record, record_frequency, display, record_folder)
+        leaderboard_evaluator.run(arguments, sensors_info, data_to_record, record_frequency, display, record_folder,data_folder,route_folder,paths[0],run_root,infractions_to_record)
 
     except Exception as e:
         traceback.print_exc()

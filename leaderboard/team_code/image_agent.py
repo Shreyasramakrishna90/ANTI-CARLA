@@ -72,7 +72,7 @@ class ImageAgent(BaseAgent):
 
     def tick(self, input_data):
         #result = super().tick(input_data)
-        #self.step += 1
+        self.step += 1
 
         rgb = cv2.cvtColor(input_data['rgb'][1][:, :, :3], cv2.COLOR_BGR2RGB)
         rgb_left = cv2.cvtColor(input_data['rgb_left'][1][:, :, :3], cv2.COLOR_BGR2RGB)
@@ -107,6 +107,7 @@ class ImageAgent(BaseAgent):
         target = np.clip(target, 0, 256)
 
         result['target'] = target
+        #print(self.step)
 
         return result
 
@@ -114,28 +115,30 @@ class ImageAgent(BaseAgent):
     def run_step_using_learned_controller(self, input_data, timestamp):
         if not self.initialized:
             self._init()
-
+        print("0")
         tick_data = self.tick(input_data)
-
+        print("1")
         img = torchvision.transforms.functional.to_tensor(tick_data['image'])
         img = img[None].cuda()
-
+        print("2")
         target = torch.from_numpy(tick_data['target'])
         target = target[None].cuda()
-
+        print("3")
         points, (target_cam, _) = self.net.forward(img, target)
         control = self.net.controller(points).cpu().squeeze()
-
+        print("4")
         steer = control[0].item()
         desired_speed = control[1].item()
         speed = tick_data['speed']
-
+        print("5")
         brake = desired_speed < 0.4 or (speed / desired_speed) > 1.1
 
         delta = np.clip(desired_speed - speed, 0.0, 0.25)
         throttle = self._speed_controller.step(delta)
         throttle = np.clip(throttle, 0.0, 0.75)
         throttle = throttle if not brake else 0.0
+
+        print(throttle)
 
         control = carla.VehicleControl()
         control.steer = steer
@@ -199,4 +202,3 @@ class ImageAgent(BaseAgent):
                     self.step)
 
         return control
-
