@@ -35,7 +35,7 @@ cd Testing-Framework
 ./make_volume_folder.sh  
 ```
 
-# Pluggable Code Skeleton
+# Adapter Glue Code
 The framework allows the user test their controllers through a pluggable code skeleton. There are some rules and constraints that needs to be followes in defining the user code. Violating these rules will throw errors.
 
 To evaluate the framwork, put the tested agent under
